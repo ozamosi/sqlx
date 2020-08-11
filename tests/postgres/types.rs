@@ -105,6 +105,14 @@ test_type!(f64_vec<Vec<f64>>(Postgres,
     "'{939399419.1225182,-12.0}'::float8[]" == vec![939399419.1225182_f64, -12.0]
 ));
 
+#[derive(PartialEq, Eq, Debug, sqlx::Type)]
+#[sqlx(transparent)]
+struct MyInt4(i32);
+
+test_type!(my_int4<MyInt4>(Postgres, "32::int" == MyInt4(32)));
+
+test_type!(my_int4_vec<Vec<MyInt4>>(Postgres, "{32, 43}::int[]" == vec![MyInt4(32), MyInt4(43)]));
+
 test_decode_type!(bool_tuple<(bool,)>(Postgres, "row(true)" == (true,)));
 
 test_decode_type!(num_tuple<(i32, i64, f64,)>(Postgres, "row(10,515::int8,3.124::float8)" == (10,515,3.124)));
